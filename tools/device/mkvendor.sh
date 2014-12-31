@@ -43,6 +43,13 @@ popd > /dev/null
 
 DEVICE_DIR=$ANDROID_TOP/device/$MANUFACTURER/$DEVICE
 
+TMPDIR=/tmp/$(whoami)/bootimg
+rm -rf $TMPDIR
+mkdir -p $TMPDIR
+
+echo Output will be in $DEVICE_DIR
+mkdir -p $DEVICE_DIR
+
 if [ ! -z "$BOOTIMAGE" ]
 then
     if [ -z "$UNPACKBOOTIMG" ]
@@ -53,12 +60,6 @@ then
 
     BOOTIMAGEFILE=$(basename $BOOTIMAGE)
 
-    echo Output will be in $DEVICE_DIR
-    mkdir -p $DEVICE_DIR
-
-    TMPDIR=/tmp/$(whoami)/bootimg
-    rm -rf $TMPDIR
-    mkdir -p $TMPDIR
     cp $BOOTIMAGE $TMPDIR
     pushd $TMPDIR > /dev/null
     unpackbootimg -i $BOOTIMAGEFILE > /dev/null
@@ -74,7 +75,6 @@ then
     cp $TMPDIR/$BOOTIMAGEFILE-zImage $DEVICE_DIR/kernel
     popd > /dev/null
 else
-    mkdir -p $DEVICE_DIR
     touch $DEVICE_DIR/kernel
     BASE=10000000
     CMDLINE=no_console_suspend
